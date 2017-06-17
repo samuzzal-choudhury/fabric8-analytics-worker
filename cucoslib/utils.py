@@ -25,7 +25,7 @@ from cucoslib.errors import TaskError
 from cucoslib.models import (Analysis, Ecosystem, Package, Version,
                              PackageGHUsage, ComponentGHUsage, DownstreamMap)
 
-from selinon import StoragePool
+from selinon import StoragePool,run_flow
 
 logger = logging.getLogger(__name__)
 configuration = get_configuration()
@@ -619,6 +619,32 @@ def get_session_retry(retries=3, backoff_factor=0.2, status_forcelist=(404, 500,
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     return session
+
+<<<<<<< HEAD
+=======
+def create_analysis(ecosystem, package, version, api_flow=True, force=False, force_graph_sync=False):
+    """Create bayesianApiFlow handling analyses for specified EPV
+
+    :param ecosystem: ecosystem for which the flow should be run
+    :param package: package for which should be flow run
+    :param version: package version
+    :param force: force run flow even specified EPV exists
+    :param force_graph_sync: force synchronization to graph
+    :return: dispatcher ID handling flow
+    """
+    args = {
+        'ecosystem': ecosystem,
+        'name': MavenCoordinates.normalize_str(package) if ecosystem == 'maven' else package,
+        'version': version,
+        'force': force,
+        'force_graph_sync': force_graph_sync
+    }
+
+    if api_flow:
+        return run_flow('bayesianApiFlow', args)
+    else:
+        return run_flow('bayesianFlow', args)
+>>>>>>> 87d1c706b572ec8dabfa1b6c350ab3a9c701424d
 
 # get not hidden files from current directory
 # print(list(get_all_files_from('.', file_filter=lambda a: not startswith(a, ['.']))))
