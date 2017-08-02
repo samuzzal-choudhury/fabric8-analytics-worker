@@ -515,9 +515,11 @@ class RecommendationV2Task(BaseTask):
     def call_pgm(self, payload):
         """Calls the PGM model with the normalized manifest information to get the relevant packages"""
         pgm_url = PGM_URL_REST + "/api/v1/schemas/kronos_scoring"
+        self.log.info ("Calling {}".format(pgm_url))
         try:
             if payload is not None:
                 response = get_session_retry().post(pgm_url, json=payload)
+                self.log.info("Status code returned for {pgm_url} [POST] {}".format(response.status_code))
                 if response.status_code != 200:
                     self.log.error("HTTP error {}. Error retrieving PGM data.".format(response.status_code))
                     return None
@@ -565,6 +567,7 @@ class RecommendationV2Task(BaseTask):
 
             # Call PGM and get the response
             pgm_response = self.call_pgm(input_task_for_pgm)
+
 
             # From PGM response process companion and alternate packages and then get Data from Graph
             # TODO - implement multiple manifest file support for below loop
